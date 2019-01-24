@@ -28,7 +28,6 @@ impl<'a> Query<'a> {
 use nom::{self, rest, multispace};
 
 /* Grammar:
-
      query = bang + WHITESPACE? + rest
      bang = '!' + word
      word = ALNUM
@@ -57,13 +56,13 @@ mod tests {
     #[test]
     fn parse_bang() {
         assert_eq!(
-            bang(b"!foo"),
-            Ok((&[][..], Some("foo")))
+            bang(b"!foo "),
+            Ok((&[b' '][..], Some("foo")))
         );
 
         assert_eq!(
-            bang(b"foo!"),
-            Ok((&[][..], Some("foo")))
+            bang(b"foo! "),
+            Ok((&[b' '][..], Some("foo")))
         );
     }
 
