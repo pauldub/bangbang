@@ -5,17 +5,13 @@ extern crate rocket;
 #[macro_use]
 extern crate nom;
 
+extern crate percent_encoding;
+
 mod bang;
 
-struct GitlabProject {}
-
-impl bang::Handler for GitlabProject {
-        fn handle(&self, _query: bang::Query) -> bang::Result {
-                bang::Result::Redirect {
-                        location: "https://example.com".to_string(),
-                }
-        }
-}
+use bang::handlers::{
+    GitlabProject, DuckDuckGo,
+};
 
 use rocket::State;
 
@@ -25,8 +21,11 @@ fn handle_bang_query(q: String, dispatcher: State<bang::Dispatcher>) -> bang::Re
 }
 
 fn main() {
-        let mut dispatcher = bang::Dispatcher::new();
-        dispatcher.add("gl", &GitlabProject {});
+        let gitlab = GitlabProject::new("https://gitlab.com");
+        let ddg = DuckDuckGo::new();
+
+        let mut dispatcher = bang::Dispatcher::new(Box::new(ddg));
+        dispatcher.add("gl", Box::new(gitlab));
 
         rocket::ignite()
                 .manage(dispatcher)
