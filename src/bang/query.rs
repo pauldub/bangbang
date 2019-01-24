@@ -10,7 +10,7 @@ pub struct Query<'a> {
 
 impl<'a> Query<'a> {
     pub fn new(bang: Option<&'a str>, rest: &'a str) -> Self {
-        Self{
+        Self {
             bang: bang,
             rest: rest,
             params: HashMap::new(),
@@ -25,7 +25,7 @@ impl<'a> Query<'a> {
     }
 }
 
-use nom::{self, rest, multispace};
+use nom::{self, multispace, rest};
 
 /* Grammar:
      query = bang + WHITESPACE? + rest
@@ -55,15 +55,9 @@ mod tests {
 
     #[test]
     fn parse_bang() {
-        assert_eq!(
-            bang(b"!foo "),
-            Ok((&[b' '][..], Some("foo")))
-        );
+        assert_eq!(bang(b"!foo "), Ok((&[b' '][..], Some("foo"))));
 
-        assert_eq!(
-            bang(b"foo! "),
-            Ok((&[b' '][..], Some("foo")))
-        );
+        assert_eq!(bang(b"foo! "), Ok((&[b' '][..], Some("foo"))));
     }
 
     #[test]

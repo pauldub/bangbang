@@ -9,26 +9,24 @@ extern crate percent_encoding;
 
 mod bang;
 
-use bang::handlers::{
-    GitlabProject, DuckDuckGo,
-};
+use bang::handlers::{DuckDuckGo, GitlabProject};
 
 use rocket::State;
 
 #[get("/?<q>")]
 fn handle_bang_query(q: String, dispatcher: State<bang::Dispatcher>) -> bang::Result {
-        dispatcher.dispatch(bang::Query::parse(&q))
+    dispatcher.dispatch(bang::Query::parse(&q))
 }
 
 fn main() {
-        let gitlab = GitlabProject::new("https://gitlab.com");
-        let ddg = DuckDuckGo::new();
+    let gitlab = GitlabProject::new("https://gitlab.com");
+    let ddg = DuckDuckGo::new();
 
-        let mut dispatcher = bang::Dispatcher::new(Box::new(ddg));
-        dispatcher.add("gl", Box::new(gitlab));
+    let mut dispatcher = bang::Dispatcher::new(Box::new(ddg));
+    dispatcher.add("gl", Box::new(gitlab));
 
-        rocket::ignite()
-                .manage(dispatcher)
-                .mount("/", routes![handle_bang_query])
-                .launch();
+    rocket::ignite()
+        .manage(dispatcher)
+        .mount("/", routes![handle_bang_query])
+        .launch();
 }
