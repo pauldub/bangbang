@@ -4,14 +4,16 @@
 extern crate rocket;
 #[macro_use]
 extern crate nom;
+#[macro_use]
+extern crate serde_derive;
 
 extern crate percent_encoding;
 
 mod bang;
 
-use bang::handlers::{DuckDuckGo, GitlabProject};
-
 use rocket::State;
+
+use bang::handlers::{DuckDuckGo, GitlabProject};
 
 #[get("/?<q>")]
 fn handle_bang_query(q: String, dispatcher: State<bang::Dispatcher>) -> bang::Result {
